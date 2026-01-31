@@ -10,59 +10,57 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
+  const [theme, setTheme] = useState("light");
+
+  const toggleTheme = () =>
+    setTheme(prev => (prev === "light" ? "dark" : "light"));
+
   const profiles = [
     { id: 0, name: "Sam", title: "UX designer", image: person1 },
     { id: 1, name: "Caroline", title: "Frontend Developer", image: person2 },
     { id: 2, name: "Bob", title: "Backend Developer", image: person3 },
   ];
-  const titles = [...new Set(profiles.map((profile) => profile.title))];
-  const [clicked, setClicked] = useState(false);
-  const handleClick = () => {
-    setClicked((prev) => !prev);
-    setClicked((prev) => !prev);
-    console.log(clicked);
-  };
+
+  const titles = [...new Set(profiles.map((p) => p.title))];
+  
   const [title, setTitle] = useState("");
   const [name, setName] = useState("");
-  const handleChangeTitle = (event) => {
-    setTitle(event.target.value);
-  };
-  const handleSearch = (event) => {
-    setName(event.target.value);
-  };
-  const handleClear = () => {
-    setTitle("");
-    setName("");
-  };
 
   const filteredProfiles = profiles.filter(
     (profile) =>
       (profile.title === title || !title) &&
       profile.name.toLowerCase().includes(name.toLowerCase()),
   );
+
   return (
-    <>
-      <Navbar />
+    <div className={`app ${theme}`}>
+      <Navbar theme={theme} toggleTheme={toggleTheme} />
+      
       <Wrapper id="about">
-        <About />
+        <About theme={theme} />
       </Wrapper>
+      
       <Wrapper id="profiles">
         <Filters
           titles={titles}
           title={title}
           name={name}
-          handleChange={handleChangeTitle}
-          handleSearch={handleSearch}
-          handleClick={handleClear}
+          handleChange={(e) => setTitle(e.target.value)}
+          handleSearch={(e) => setName(e.target.value)}
+          handleClick={() => {
+            setTitle("");
+            setName("");
+          }}
         />
+
         <div className="grid">
           {filteredProfiles.length > 0 ? (
             filteredProfiles.map((profile) => (
               <Card
-                key={profile.id}
-                name={profile.name}
-                title={profile.title}
-                image={profile.image}
+                key={profile.id} {...profile} theme={theme}
+                // name={profile.name}
+                // title={profile.title}
+                // image={profile.image}
               />
             ))
           ) : (
@@ -70,7 +68,7 @@ function App() {
           )}
         </div>
       </Wrapper>
-    </>
+    </div>
   );
 }
 

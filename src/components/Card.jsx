@@ -1,19 +1,17 @@
-import person1 from "../assets/person1.png"
-import '../styles/Card.css';
+import styles from './Card.module.css';
 
-const Card = (props) => {
-
+function Card({ name, title, image, theme }) {
     return (
-        <div className="card">
-            <div className="top">
-                <img src={props.image} alt={props.name} />
-            </div>
-            <div className="bottom">
-                <p>{props.name}</p>
-                <p>{props.title}</p>
-            </div>
+        <div
+          className={`${styles.card} ${
+            theme === "dark" ? styles.dark : styles.light
+          }`}
+        >
+            <img src={image} alt={name} />
+            <p className={styles.name}>{name}</p>
+            <p className={styles.title}>{title}</p>
         </div>
     );
-};
+}
 
 export default Card;
