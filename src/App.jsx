@@ -6,6 +6,7 @@ import Filters from "./components/Filters";
 import person1 from "./assets/person1.png";
 import person2 from "./assets/person2.png";
 import person3 from "./assets/person3.png";
+import AppProfileForm from "./components/AppProfileForm";
 import { useState } from "react";
 import "./App.css";
 
@@ -15,17 +16,20 @@ function App() {
   const toggleTheme = () =>
     setTheme(prev => (prev === "light" ? "dark" : "light"));
 
-  const profiles = [
+  const [profiles, setProfiles] = useState([
     { id: 0, name: "Sam", title: "UX designer", image: person1 },
     { id: 1, name: "Caroline", title: "Frontend Developer", image: person2 },
     { id: 2, name: "Bob", title: "Backend Developer", image: person3 },
-  ];
+  ]);
 
   const titles = [...new Set(profiles.map((p) => p.title))];
   
   const [title, setTitle] = useState("");
   const [name, setName] = useState("");
 
+  const updateProfiles = (profile) => {
+    setProfiles((prev) => [...prev, profile])
+  }
   const filteredProfiles = profiles.filter(
     (profile) =>
       (profile.title === title || !title) &&
@@ -39,7 +43,10 @@ function App() {
       <Wrapper id="about">
         <About theme={theme} />
       </Wrapper>
-      
+      <Wrapper id="add-profile">
+        <AppProfileForm onAddProfile={updateProfiles}/>
+      </Wrapper>
+
       <Wrapper id="profiles">
         <Filters
           titles={titles}
@@ -58,9 +65,6 @@ function App() {
             filteredProfiles.map((profile) => (
               <Card
                 key={profile.id} {...profile} theme={theme}
-                // name={profile.name}
-                // title={profile.title}
-                // image={profile.image}
               />
             ))
           ) : (
