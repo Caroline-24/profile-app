@@ -9,6 +9,7 @@ import person3 from "./assets/person3.png";
 import AppProfileForm from "./components/AppProfileForm";
 import { useState } from "react";
 import "./App.css";
+import FetchedProfiles from "./components/FetchedProfiles";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -43,10 +44,12 @@ function App() {
       <Wrapper id="about">
         <About theme={theme} />
       </Wrapper>
+      <Wrapper id="fetched-profiles">
+        <FetchedProfiles />
+      </Wrapper>
       <Wrapper id="add-profile">
         <AppProfileForm onAddProfile={updateProfiles}/>
       </Wrapper>
-
       <Wrapper id="profiles">
         <Filters
           titles={titles}
