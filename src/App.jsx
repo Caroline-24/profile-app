@@ -1,19 +1,17 @@
-import Card from "./components/Card";
 import Navbar from "./components/Navbar";
-import About from "./components/About";
-import Wrapper from "./components/Wrapper";
-import Filters from "./components/Filters";
 import person1 from "./assets/person1.png";
 import person2 from "./assets/person2.png";
 import person3 from "./assets/person3.png";
-import AppProfileForm from "./components/AppProfileForm";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
-import "./App.css";
-import FetchedProfiles from "./components/FetchedProfiles";
+import HomePage from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
+import AddProfilePage from "./pages/AddProfilePage";
+import FetchedProfilesPage from "./pages/FetchedProfilePage";
+import "./App.css"
 
 function App() {
   const [theme, setTheme] = useState("light");
-
   const toggleTheme = () =>
     setTheme(prev => (prev === "light" ? "dark" : "light"));
 
@@ -23,59 +21,27 @@ function App() {
     { id: 2, name: "Bob", title: "Backend Developer", image: person3 },
   ]);
 
-  const titles = [...new Set(profiles.map((p) => p.title))];
-  
   const [title, setTitle] = useState("");
   const [name, setName] = useState("");
 
   const updateProfiles = (profile) => {
     setProfiles((prev) => [...prev, profile])
   }
-  const filteredProfiles = profiles.filter(
-    (profile) =>
-      (profile.title === title || !title) &&
-      profile.name.toLowerCase().includes(name.toLowerCase()),
-  );
-
+  
   return (
-    <div className={`app ${theme}`}>
-      <Navbar theme={theme} toggleTheme={toggleTheme} />
-      
-      <Wrapper id="about">
-        <About theme={theme} />
-      </Wrapper>
-      <Wrapper id="fetched-profiles">
-        <FetchedProfiles />
-      </Wrapper>
-      <Wrapper id="add-profile">
-        <AppProfileForm onAddProfile={updateProfiles}/>
-      </Wrapper>
-      <Wrapper id="profiles">
-        <Filters
-          titles={titles}
-          title={title}
-          name={name}
-          handleChange={(e) => setTitle(e.target.value)}
-          handleSearch={(e) => setName(e.target.value)}
-          handleClick={() => {
-            setTitle("");
-            setName("");
-          }}
-        />
+    <HashRouter>
+      <div className={theme}>
+        <Navbar theme={theme} toggleTheme={toggleTheme} />
 
-        <div className="grid">
-          {filteredProfiles.length > 0 ? (
-            filteredProfiles.map((profile) => (
-              <Card
-                key={profile.id} {...profile} theme={theme}
-              />
-            ))
-          ) : (
-            <p>No profiles selected.</p>
-          )}
-        </div>
-      </Wrapper>
-    </div>
+        <Routes>
+          <Route path="/" element={<HomePage profiles={profiles} title={title} name={name} theme={theme} handleChangeTitle={(e) => setTitle(e.target.value)} handleSearch={(e) => setName(e.target.value)} handleClear={() => {setTitle(""); setName("");}} />} />
+          <Route path="/about" element={<AboutPage theme={theme} />} />
+          <Route path="/add-profile" element={<AddProfilePage updateProfiles={updateProfiles} />} />
+          <Route path="/fetched-profiles" element={<FetchedProfilesPage />} />
+          <Route path="*" element={<p>Page not found</p>} />
+        </Routes>
+      </div>
+    </HashRouter>
   );
 }
 

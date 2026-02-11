@@ -1,4 +1,5 @@
 import styles from './Navbar.module.css';
+import { Link } from "react-router-dom"
 
 function Navbar({ toggleTheme, theme }) {
     return (
@@ -8,9 +9,10 @@ function Navbar({ toggleTheme, theme }) {
 
                 <nav>
                     <ul className={styles.links}>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#profiles">Cards</a></li>
+                        <li><Link to="/">Home</Link></li>
+                        <li><Link to="/about">About</Link></li>
+                        <li><Link to="/fetched-profiles">Cards</Link></li>
+                        <li><Link to="/add-profile">Add Profile</Link></li>
                     </ul>
                 </nav>
 
