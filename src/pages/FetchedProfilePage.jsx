@@ -9,5 +9,4 @@ const FetchedProfilesPage = () => {
         </Wrapper>
     )
 }
-
 export default FetchedProfilesPage;
