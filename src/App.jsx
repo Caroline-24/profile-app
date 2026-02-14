@@ -8,6 +8,8 @@ import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import AddProfilePage from "./pages/AddProfilePage";
 import FetchedProfilesPage from "./pages/FetchedProfilePage";
+import ProfileDetailPage from "./pages/ProfileDetailPage";
+import ProfileLayoutPage from "./pages/ProfileLayoutPage";
 import "./App.css"
 
 function App() {
@@ -36,8 +38,11 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage profiles={profiles} title={title} name={name} theme={theme} handleChangeTitle={(e) => setTitle(e.target.value)} handleSearch={(e) => setName(e.target.value)} handleClear={() => {setTitle(""); setName("");}} />} />
           <Route path="/about" element={<AboutPage theme={theme} />} />
-          <Route path="/add-profile" element={<AddProfilePage updateProfiles={updateProfiles} />} />
           <Route path="/fetched-profiles" element={<FetchedProfilesPage />} />
+          <Route path="/fetched-profiles/profile" element={<ProfileLayoutPage />} >
+            <Route path=":id" element={<ProfileDetailPage />} />
+          </Route>
+          <Route path="/add-profile" element={<AddProfilePage updateProfiles={updateProfiles} />} />
           <Route path="*" element={<p>Page not found</p>} />
         </Routes>
       </div>

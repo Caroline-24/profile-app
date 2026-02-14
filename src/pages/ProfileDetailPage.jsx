@@ -1,0 +1,35 @@
+import Wrapper from "../components/Wrapper";
+import {useParams} from "react-router-dom";
+import { useState, useEffect } from "react";
+
+const ProfileDetailPage = () => {
+    const { id } = useParams();
+    const[profile, setProfile] = useState(null)
+
+    useEffect(() =>{
+        fetch(`https://web.ics.purdue.edu/~zong6/profile-app/fetch-data-with-id.php?id=${id}`)
+        .then(res => res.json())
+        .then(res => setProfile(res))
+        .then(err => console.error(err));
+    }, [id])
+    if(profile) {
+    const {name, title, email, bio, image_url} = profile
+    }
+
+    return profile? (
+        <Wrapper>
+            <h1>{profile.name}</h1>
+            <img src={profile.image_url} alt={profile.name} />
+            <p>{profile.email}</p>\
+            <p>{profile.title}</p>
+            <p>{profile.bio}</p>
+        </Wrapper>
+     ) : ( 
+        <Wrapper>
+            <p>Loading</p>
+        </Wrapper>
+    );
+
+};
+
+export default ProfileDetailPage;

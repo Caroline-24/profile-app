@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const stripTags = (s) => String(s ?? "").replace(/<\/?[^>]+>/g, "");
 
@@ -12,6 +13,7 @@ const AppProfileForm = ({ onAddProfile }) => {
     const [success, setSuccess] = useState("")
 
     const {name, title, email, bio, image} = values;
+    const navigate = useNavigate();
     
     const handleChange = (event) => {
         const {name, value, files} = event.target
@@ -64,12 +66,11 @@ const AppProfileForm = ({ onAddProfile }) => {
             onAddProfile(cleanedData);
 
         setValues({ name: "", title: "", email: "", bio: "", image: null });
-
         setError("");
         setSuccess("Form submitted successfully");
-
         setTimeout(() => {
             setSuccess("");
+            navigate("/", { replace: true });
         }, 1000);
     } catch (error) {
         setError(error.message || "Something went wrong");
