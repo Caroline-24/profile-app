@@ -1,6 +1,8 @@
 import Filters from "../components/Filters";
 import Card from "../components/Card";
 import Wrapper from "../components/Wrapper";
+import { useContext } from "react";
+import ProfileContext from "../context/ProfileContext";
 
 function HomePage({ profiles, handleChangeTitle, handleSearch, handleClear, title, name, theme}) {
 

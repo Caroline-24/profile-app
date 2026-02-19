@@ -1,7 +1,11 @@
 import styles from './Navbar.module.css';
 import { Link } from "react-router-dom"
+import { useContext } from 'react';
+import ModeContext from '../context/ModeContext';
 
-function Navbar({ toggleTheme, theme }) {
+function Navbar() {
+
+    const {theme, toggleTheme} = useContext(ModeContext)
     return (
         <header className={styles.header}>
             <div className={styles.container}>
