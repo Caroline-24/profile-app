@@ -1,51 +1,75 @@
-import { useState } from "react";
+import { useReducer, useRef, useLayoutEffect, useState } from "react";
+import formReducer from "../reducers/formReducer";
 import { useNavigate } from "react-router-dom";
 
 const stripTags = (s) => String(s ?? "").replace(/<\/?[^>]+>/g, "");
-
 const trimCollapse = (s) => String(s ?? "").trim().replace(/\s+/g, " ");
+
+const initialState = {
+    values: {
+        name: "",
+        title: "",
+        email: "",
+        bio: "",
+        image: "",
+    },
+    error: "",
+    isSubmitting: false,
+    success: ""
+}
 
 const AppProfileForm = ({ onAddProfile }) => {
 
-    const [values, setValues] = useState({name: "", title: "", email: "", bio: "", image: null}); 
-    const [error, setErrors] = useState("")
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const [success, setSuccess] = useState("")
+    //const [values, setValues] = useState({name: "", title: "", email: "", bio: "", image: null}); 
+    //const [error, setErrors] = useState("")
+    //const [isSubmitting, setIsSubmitting] = useState(false)
+    //const [success, setSuccess] = useState("")
+    const [state, dispatch] = useReducer(formReducer, initialState);
+
+    const {values, error, isSubmitting, success} = state;
 
     const {name, title, email, bio, image} = values;
     const navigate = useNavigate();
+
+    const fieldRef = useRef(null)
+    
+    useLayoutEffect(() =>{
+        if (fieldRef.current) fieldRef.current.focus();
+    }, []);
     
     const handleChange = (event) => {
         const {name, value, files} = event.target
         if( name === "image"){
             const file = event.target.files[0]
-            if(file && file.size < 1024 * 1024){
-                setValues(pre => ({...pre, image:file}));
-                setErrors("");
-            }else{
-                setErrors("Image should be less than 1 MB")
-                setValues(pre => ({...pre, image:null}))
-            }
+            dispatch({type: "SET_IMG", payload: file})
+            //if(file && file.size < 1024 * 1024){
+                //setValues(pre => ({...pre, image:file}));
+                //setErrors("");
+        } else {
+                dispatch ({type: "SET_VALUES", payload: name, value: value})
+                //setErrors("Image should be less than 1 MB")
+                //setValues(pre => ({...pre, image:null}))
         }
-        setValues(pre => ({...pre, [name]: value}))
     };
+        //setValues(pre => ({...pre, [name]: value}))
 
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        setIsSubmitting(true)
-        setError("")
-        setSuccess("")
+        dispatch({type: "START_SUBMITTING"})
+        
+        //setIsSubmitting(true)
+        //setErrors("")
+        //setSuccess("")
 
         try{
         if(!stripTags(trimCollapse(name))
             || !stripTags(trimCollapse(title))
             || !trimCollapse(trimCollapse(bio))
-            || !stripTags(trimCollapse(email))){
-                SetErrors("Please fill in name, title, email, and description")
-                return
-
-        }
+            || !stripTags(trimCollapse(email))
+        ) 
+        dispatch({ type: "SYSTEM_ERROR", payload: "Please fill in name, title, email, and bio" });
+        return;
         const cleanedData = {
             id: Date.now(),
             name: stripTags(trimCollapse(name)),
@@ -57,25 +81,32 @@ const AppProfileForm = ({ onAddProfile }) => {
         }
 
         if (!image) {
-            setError("Please upload an image.");
-            setIsSubmitting(false);
-            return;
+            dispatch({ type: "SYSTEM_ERROR", payload: "Please upload an image." });
+            //setError("Please upload an image.");
+            //setIsSubmitting(false);
+            //return;
         }
+        
+
 
         try {
             onAddProfile(cleanedData);
+            dispatch({type: "ON_SUBMIT"})
 
-        setValues({ name: "", title: "", email: "", bio: "", image: null });
-        setError("");
-        setSuccess("Form submitted successfully");
+        //setValues({ name: "", title: "", email: "", bio: "", image: null });
+        //setError("");
+        //setSuccess("Form submitted successfully");
         setTimeout(() => {
-            setSuccess("");
+            //setSuccess("");
+            dispatch({type: "SUBMIT_SUCCESS"})
             navigate("/", { replace: true });
         }, 1000);
     } catch (error) {
-        setError(error.message || "Something went wrong");
+        //setError(error.message || "Something went wrong");
+        dispatch({type: "SYSTEM_ERROR", payload: error.message})
     } finally {
-        setIsSubmitting(false);
+        //setIsSubmitting(false);
+        dispatch({type: "AFTER_SUBMIT"})
     }
 
     }catch(error){
@@ -93,7 +124,7 @@ const AppProfileForm = ({ onAddProfile }) => {
     return(
         <form onSubmit={handleSubmit} className="">
             <label htmlFor="name">Name</label>
-            <input id="name" name="name" required value={name} onChange={handleChange} />
+            <input id="name" name="name" required value={name} onChange={handleChange} ref={fieldRef} />
             <label htmlFor="title">Title</label>
             <input id="title" name="title" required value={title} onChange={handleChange} />
             <label htmlFor="email">Email</label>
@@ -108,8 +139,6 @@ const AppProfileForm = ({ onAddProfile }) => {
             {success && <p>{success}</p>}
         </form>
     )
-
 }
-
 
 export default AppProfileForm;
