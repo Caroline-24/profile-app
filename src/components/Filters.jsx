@@ -1,13 +1,14 @@
 import styles from "./Filters.module.css"
+import { memo } from "react";
 
-const Filters = ({
+const Filters = memo(({
     titles,
     title,
     name,
     handleChange,
     handleSearch,
     handleClick,
-}) => {
+    }) => {
     return (
         <div className={styles.container}>
             <div className={styles.dropdown}>
@@ -46,6 +47,6 @@ const Filters = ({
             </button>
         </div>
     );
-};
+});
 
 export default Filters;

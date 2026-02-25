@@ -3,7 +3,7 @@ import person1 from "./assets/person1.png";
 import person2 from "./assets/person2.png";
 import person3 from "./assets/person3.png";
 import { HashRouter, Routes, Route } from "react-router-dom";
-import { useState, useContext } from "react";
+import { useState, useContext, useCallback, lazy, Suspense } from "react";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import AddProfilePage from "./pages/AddProfilePage";
@@ -14,6 +14,8 @@ import "./App.css";
 import ModeContext from "./context/ModeContext";
 import ProfileContext from "./context/ProfileContext";
 
+const FetchedProfilePage = lazy(() => import("./pages/FetchedProfilePage"))
+
 function App() {
 
   const {theme, toggleTheme} =useContext(ModeContext)
@@ -21,6 +23,16 @@ function App() {
 
   const [title, setTitle] = useState("");
   const [name, setName] = useState("");
+  const handleChangeTitle = useCallback((event)=>{
+    setTitle(event.target.value);
+  }, []);
+  const handleSearch = useCallback((event) => {
+    setName(event.target.value);
+  }, []);
+  const handleClear = useCallback(() => {
+    setTitle("");
+    setName("");
+  }, []);
   
   return (
     <HashRouter>
@@ -28,9 +40,9 @@ function App() {
         <Navbar theme={theme} toggleTheme={toggleTheme} />
 
         <Routes>
-          <Route path="/" element={<HomePage profiles={profiles} title={title} name={name} theme={theme} handleChangeTitle={(e) => setTitle(e.target.value)} handleSearch={(e) => setName(e.target.value)} handleClear={() => {setTitle(""); setName("");}} />} />
+          <Route path="/" element={<HomePage profiles={profiles} title={title} name={name} theme={theme} handleChangeTitle={handleChangeTitle} handleSearch={handleSearch} handleClear={handleClear} />} />
           <Route path="/about" element={<AboutPage theme={theme} />} />
-          <Route path="/fetched-profiles" element={<FetchedProfilesPage />} />
+          <Route path="/fetched-profiles" element={<Suspense fallback={<p>Loading...</p>}> <FetchedProfilePage /></Suspense>}/>
           <Route path="/fetched-profiles/profile" element={<ProfileLayoutPage />} >
             <Route path=":id" element={<ProfileDetailPage />} />
           </Route>
