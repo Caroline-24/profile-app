@@ -2,23 +2,23 @@ import { useState, useEffect } from "react"
 import Filters from "../components/Filters"
 import Card from "../components/Card"
 import { Link } from "react-router-dom"
+import useFilters from "../hooks/useFilters"
 
 const FetchedProfiles = () => {
     
     const [titles, setTitles] = useState([])
-    const [title, setTitle] = useState("")
-    const [name, setName] = useState("")
     const [profiles, setProfiles] = useState([])
-    const handleChangeTitle = (event) => {
-        setTitle(event.target.value);
-    };
-    const handleSearch = (event) => {
-        setName(event.target.value);
-    };
-    const handleClear = () => {
-        setTitle("");
-        setName("");
-    };
+    const {title, name, handleChangeTitle, handleSearch, handleClear} = useFilters();
+    // const handleChangeTitle = (event) => {
+    //     setTitle(event.target.value);
+    // };
+    // const handleSearch = (event) => {
+    //     setName(event.target.value);
+    // };
+    // const handleClear = () => {
+    //     setTitle("");
+    //     setName("");
+    // };
 
     useEffect(()=>{ 
 

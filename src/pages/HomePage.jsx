@@ -1,12 +1,11 @@
 import Filters from "../components/Filters";
 import Card from "../components/Card";
 import Wrapper from "../components/Wrapper";
-import { useContext } from "react";
-import ProfileContext from "../context/ProfileContext";
 import { useMemo } from "react";
+import useProfiles from "../hooks/useProfiles";
 
-function HomePage({ profiles, handleChangeTitle, handleSearch, handleClear, title, name, theme}) {
-
+function HomePage({ handleChangeTitle, handleSearch, handleClear, title, name, theme}) {
+  const { profiles } = useProfiles()
   const titles = useMemo(()=>
     [...new Set(profiles.map((p) => p.title))],
     [profiles],

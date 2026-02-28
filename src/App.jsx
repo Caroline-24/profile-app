@@ -13,6 +13,7 @@ import ProfileLayoutPage from "./pages/ProfileLayoutPage";
 import "./App.css";
 import ModeContext from "./context/ModeContext";
 import ProfileContext from "./context/ProfileContext";
+import useFilters from "./hooks/useFilters";
 
 const FetchedProfilePage = lazy(() => import("./pages/FetchedProfilePage"))
 
@@ -21,18 +22,20 @@ function App() {
   const {theme, toggleTheme} =useContext(ModeContext)
   const { profiles, updateProfiles } = useContext(ProfileContext)
 
-  const [title, setTitle] = useState("");
-  const [name, setName] = useState("");
-  const handleChangeTitle = useCallback((event)=>{
-    setTitle(event.target.value);
-  }, []);
-  const handleSearch = useCallback((event) => {
-    setName(event.target.value);
-  }, []);
-  const handleClear = useCallback(() => {
-    setTitle("");
-    setName("");
-  }, []);
+  const {title, name, handleChangeTitle, handleSearch, handleClear} =useFilters ();
+  
+  // const [title, setTitle] = useState("");
+  // const [name, setName] = useState("");
+  // const handleChangeTitle = useCallback((event)=>{
+  //   setTitle(event.target.value);
+  // }, []);
+  // const handleSearch = useCallback((event) => {
+  //   setName(event.target.value);
+  // }, []);
+  // const handleClear = useCallback(() => {
+  //   setTitle("");
+  //   setName("");
+  // }, []);
   
   return (
     <HashRouter>
